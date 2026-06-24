@@ -29,7 +29,7 @@
                 <div class="form-section">
                     <h3>📄 Upload Blood Report PDF</h3>
                     <div class="upload-area" id="uploadArea">
-                        <input type="file" id="pdfFile" accept=".pdf" style="display: none;">
+                        <input type="file" id="pdfFile" accept="application/pdf,image/*" style="display: none;">
                         <p>Click to upload or drag PDF here</p>
                         <small>AI will extract and auto-fill fields</small>
                     </div>
@@ -213,14 +213,28 @@
         <div id="successToast" class="toast success" style="display: none;"></div>
     </div>
 
-    <!-- PDFjs Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- PDFjs Library (local copy) -->
+    <script src="assets/pdf.min.js"></script>
     <script>
-        // Ensure PDF.js worker is explicitly set to avoid deprecated API warnings
-        if (window.pdfjsLib) {
+        // Prefer a locally hosted PDF.js worker to avoid cross-origin storage/tracking issues on Pages.
+        (function() {
+            if (!window.pdfjsLib) return;
             pdfjsLib.GlobalWorkerOptions = pdfjsLib.GlobalWorkerOptions || {};
-            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        }
+
+            // Local worker path relative to repo root. Download the worker into `/assets/pdf.worker.min.js`.
+            const localWorker = 'assets/pdf.worker.min.js';
+
+            // Try to fetch the local worker to ensure it exists, otherwise fall back to CDN.
+            fetch(localWorker, { method: 'HEAD' }).then(res => {
+                if (res.ok) {
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = localWorker;
+                } else {
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                }
+            }).catch(() => {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            });
+        })();
     </script>
     
     <!-- App Scripts -->
