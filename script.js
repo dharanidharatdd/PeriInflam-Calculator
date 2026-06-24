@@ -128,27 +128,19 @@ class PeriInflamApp {
     }
 
     fillCBCFields(values) {
-        if (values.rbc !== undefined && values.rbc !== null) {
-            document.getElementById('rbc').value = values.rbc;
-        }
-        if (values.wbc !== undefined && values.wbc !== null) {
-            document.getElementById('wbc').value = values.wbc;
-        }
-        if (values.hb !== undefined && values.hb !== null) {
-            document.getElementById('hb').value = values.hb;
-        }
-        if (values.plt !== undefined && values.plt !== null) {
-            document.getElementById('plt').value = values.plt;
-        }
-        if (values.neutrophils !== undefined && values.neutrophils !== null) {
-            document.getElementById('neutrophils').value = values.neutrophils;
-        }
-        if (values.lymphocytes !== undefined && values.lymphocytes !== null) {
-            document.getElementById('lymphocytes').value = values.lymphocytes;
-        }
-        if (values.hba1c !== undefined && values.hba1c !== null) {
-            document.getElementById('hba1c').value = values.hba1c;
-        }
+        const setIfFinite = (id, val) => {
+            if (val !== undefined && val !== null && Number.isFinite(Number(val))) {
+                document.getElementById(id).value = val;
+            }
+        };
+
+        setIfFinite('rbc', values.rbc);
+        setIfFinite('wbc', values.wbc);
+        setIfFinite('hb', values.hb);
+        setIfFinite('plt', values.plt);
+        setIfFinite('neutrophils', values.neutrophils);
+        setIfFinite('lymphocytes', values.lymphocytes);
+        setIfFinite('hba1c', values.hba1c);
     }
 
     calculateCBC() {

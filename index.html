@@ -215,6 +215,13 @@
 
     <!-- PDFjs Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // Ensure PDF.js worker is explicitly set to avoid deprecated API warnings
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions = pdfjsLib.GlobalWorkerOptions || {};
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+    </script>
     
     <!-- App Scripts -->
     <script src="calculator.js"></script>
