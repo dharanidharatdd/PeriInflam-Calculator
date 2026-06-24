@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeriInflam Calculator - Blood Indices & Periodontal Assessment</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🩺 PeriInflam Calculator</h1>
+            <p>Systemic Inflammatory & Periodontal Indices Assessment</p>
+        </header>
+
+        <main>
+            <!-- Tabs Navigation -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="cbc-data">CBC Data</button>
+                <button class="tab-btn" data-tab="periodontal-data">Periodontal Data</button>
+                <button class="tab-btn" data-tab="results">Results</button>
+            </div>
+
+            <!-- CBC Data Tab -->
+            <section id="cbc-data" class="tab-content active">
+                <h2>Complete Blood Picture (CBC)</h2>
+                
+                <!-- PDF Upload Section -->
+                <div class="form-section">
+                    <h3>📄 Upload Blood Report PDF</h3>
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="pdfFile" accept=".pdf" style="display: none;">
+                        <p>Click to upload or drag PDF here</p>
+                        <small>AI will extract and auto-fill fields</small>
+                    </div>
+                    <button id="extractBtn" class="btn btn-primary" disabled>Extract from PDF</button>
+                    <div id="extractStatus" class="status-message"></div>
+                </div>
+
+                <!-- Manual Entry Section -->
+                <div class="form-section">
+                    <h3>📋 Manual Entry / Edit Values</h3>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="rbc">RBC (10^6/μL)</label>
+                            <input type="number" id="rbc" placeholder="e.g., 4.5" step="0.1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="wbc">WBC (10^3/μL)</label>
+                            <input type="number" id="wbc" placeholder="e.g., 7.5" step="0.1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="hb">Hemoglobin (g/dL)</label>
+                            <input type="number" id="hb" placeholder="e.g., 14" step="0.1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="plt">Platelets (10^3/μL)</label>
+                            <input type="number" id="plt" placeholder="e.g., 250" step="1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="neutrophils">Neutrophils (%)</label>
+                            <input type="number" id="neutrophils" placeholder="e.g., 60" step="0.1" min="0" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="lymphocytes">Lymphocytes (%)</label>
+                            <input type="number" id="lymphocytes" placeholder="e.g., 30" step="0.1" min="0" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="hba1c">HbA1c (%)</label>
+                            <input type="number" id="hba1c" placeholder="e.g., 5.5" step="0.1" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <button id="calculateCBCBtn" class="btn btn-success">Calculate Inflammatory Indices</button>
+            </section>
+
+            <!-- Periodontal Data Tab -->
+            <section id="periodontal-data" class="tab-content">
+                <h2>Periodontal Assessment</h2>
+                
+                <div class="form-section">
+                    <h3>📊 Periodontal Measurements</h3>
+                    <p class="hint">Enter all values in millimeters (mm) or as decimals</p>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="mpd">Mean Probing Depth (mm)</label>
+                            <input type="number" id="mpd" placeholder="e.g., 3.2" step="0.1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="mcal">Mean Clinical Attachment Loss (mm)</label>
+                            <input type="number" id="mcal" placeholder="e.g., 2.5" step="0.1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="ibl">Interdental Bone Loss (mm)</label>
+                            <input type="number" id="ibl" placeholder="e.g., 1.8" step="0.1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="alsa">Alveolar Lesion Surface Area (mm²)</label>
+                            <input type="number" id="alsa" placeholder="e.g., 45" step="0.1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="pisa">Periodontal Inflamed Surface Area (mm²)</label>
+                            <input type="number" id="pisa" placeholder="e.g., 50" step="0.1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="pesa">Periodontal Epithelial Surface Area (mm²)</label>
+                            <input type="number" id="pesa" placeholder="e.g., 100" step="0.1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="staging">Staging (1-4)</label>
+                            <select id="staging">
+                                <option value="">Select...</option>
+                                <option value="1">Stage 1 (Initial)</option>
+                                <option value="2">Stage 2 (Moderate)</option>
+                                <option value="3">Stage 3 (Severe)</option>
+                                <option value="4">Stage 4 (Severe with Complications)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="grading">Grading (A-C)</label>
+                            <select id="grading">
+                                <option value="">Select...</option>
+                                <option value="A">Grade A (Slow)</option>
+                                <option value="B">Grade B (Moderate)</option>
+                                <option value="C">Grade C (Rapid)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="savePerioBtn" class="btn btn-success">Save Periodontal Data</button>
+            </section>
+
+            <!-- Results Tab -->
+            <section id="results" class="tab-content">
+                <h2>📈 Assessment Results</h2>
+                
+                <!-- Inflammatory Indices -->
+                <div class="results-section">
+                    <h3>Systemic Inflammatory Indices</h3>
+                    <div id="inflammatoryResults" class="results-grid">
+                        <div class="result-card">
+                            <div class="result-label">SII (Systemic Immune-inflammation Index)</div>
+                            <div class="result-value" id="siiValue">—</div>
+                            <div class="result-formula">SII = (Plt × N) / L</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-label">PIV (Platelet-to-Lymphocyte Ratio)</div>
+                            <div class="result-value" id="pivValue">—</div>
+                            <div class="result-formula">PIV = Plt / L</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-label">SIRI (Systemic Inflammation Response Index)</div>
+                            <div class="result-value" id="siriValue">—</div>
+                            <div class="result-formula">SIRI = (N × MON) / L</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-label">HbA1c</div>
+                            <div class="result-value" id="hba1cValue">—</div>
+                            <div class="result-note" id="hba1cNote"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Periodontal Indices -->
+                <div class="results-section">
+                    <h3>Periodontal Assessment</h3>
+                    <div id="periodontalResults" class="results-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Mean Probing Depth:</span>
+                            <span class="detail-value" id="rMpd">—</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Mean Clinical Attachment Loss:</span>
+                            <span class="detail-value" id="rMcal">—</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Interdental Bone Loss:</span>
+                            <span class="detail-value" id="rIbl">—</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">ALSA:</span>
+                            <span class="detail-value" id="rAlsa">—</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">PISA:</span>
+                            <span class="detail-value" id="rPisa">—</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">PESA:</span>
+                            <span class="detail-value" id="rPesa">—</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Staging:</span>
+                            <span class="detail-value" id="rStaging">—</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Grading:</span>
+                            <span class="detail-value" id="rGrading">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="exportBtn" class="btn btn-secondary">📥 Export Results</button>
+            </section>
+        </main>
+
+        <!-- Error Toast -->
+        <div id="errorToast" class="toast error" style="display: none;"></div>
+        <div id="successToast" class="toast success" style="display: none;"></div>
+    </div>
+
+    <!-- PDFjs Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <!-- App Scripts -->
+    <script src="calculator.js"></script>
+    <script src="pdf-handler.js"></script>
+    <script src="gemini-handler.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

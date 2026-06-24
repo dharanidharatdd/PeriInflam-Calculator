@@ -1,0 +1,53 @@
+# Git Ignore File
+# This file tells Git which files NOT to track
+
+# API Keys and sensitive files
+gemini-handler.js  # Remove this line if you want to track the file with your key
+*.env
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# Build output
+dist/
+build/
+out/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Keep these important files
+!gemini-handler.js
+!index.html
+!styles.css
+!calculator.js
+!pdf-handler.js
+!script.js
+!README.md
