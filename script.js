@@ -59,6 +59,11 @@ class PeriInflamApp {
         document.getElementById('exportBtn').addEventListener('click', () => this.exportResults());
     }
 
+    // No runtime API key UI — API must be preconfigured in `gemini-handler.js`
+    updateApiKeyStatus() {
+        return;
+    }
+
     switchTab(tabName) {
         // Hide all tabs
         document.querySelectorAll('.tab-content').forEach(tab => {
@@ -96,9 +101,7 @@ class PeriInflamApp {
 
             // Check if Gemini API is configured
             if (!GeminiHandler.isConfigured()) {
-                this.showError('⚠️ AI is temporarily unavailable. Please enter CBC values manually or configure API key.');
-                
-                // Still attempt basic parsing
+                this.showError('⚠️ AI key not configured in app. Falling back to basic parsing.');
                 const rawValues = await PDFHandler.parseRawCBCValues(extractedText);
                 this.fillCBCFields(rawValues);
                 return;
