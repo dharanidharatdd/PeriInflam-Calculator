@@ -1,4 +1,4 @@
-# PeriInflam Calculator 🩺
+# PeriInflam Calculator 
 
 A comprehensive web application for calculating systemic inflammatory indices and assessing periodontal health. Combines blood test data with periodontal measurements for integrated clinical assessment.
 
