@@ -130,6 +130,85 @@ const Calculator = {
     },
 
     /**
+     * Automatically classify periodontal stage and grade using the 2017 framework.
+     * This uses the measurements available in the app and falls back to severity-based
+     * grading when HbA1c is not provided.
+     *
+     * @param {object} data - Periodontal inputs
+     * @param {number} data.mpd - Mean probing depth
+     * @param {number} data.mcal - Mean clinical attachment loss
+     * @param {number} data.ibl - Interdental bone loss
+     * @param {number} data.hba1c - HbA1c percentage
+     * @returns {object} Automatic stage/grade classification
+     */
+    calculatePeriodontalClassification({ mpd, mcal, ibl, hba1c } = {}) {
+        const hasMpd = Number.isFinite(mpd);
+        const hasMcal = Number.isFinite(mcal);
+        const hasIbl = Number.isFinite(ibl);
+        const hasHbA1c = Number.isFinite(hba1c);
+
+        let stage = '';
+        let stageLabel = '—';
+        let grade = '';
+        let gradeLabel = '—';
+        let gradeSource = '—';
+
+        if (hasMpd || hasMcal || hasIbl) {
+            const depth = hasMpd ? mpd : 0;
+            const attachmentLoss = hasMcal ? mcal : 0;
+            const boneLoss = hasIbl ? ibl : null;
+
+            if ((attachmentLoss <= 2 && depth <= 4 && (boneLoss === null || boneLoss < 15))) {
+                stage = '1';
+                stageLabel = 'Stage 1';
+            } else if ((attachmentLoss > 2 && attachmentLoss <= 4 && depth <= 5 && (boneLoss === null || (boneLoss >= 15 && boneLoss < 33)))) {
+                stage = '2';
+                stageLabel = 'Stage 2';
+            } else if ((attachmentLoss > 4 && attachmentLoss <= 6 && depth <= 6 && (boneLoss === null || (boneLoss >= 33 && boneLoss < 50)))) {
+                stage = '3';
+                stageLabel = 'Stage 3';
+            } else {
+                stage = '4';
+                stageLabel = 'Stage 4';
+            }
+
+            if (hasHbA1c) {
+                if (hba1c < 5.7) {
+                    grade = 'A';
+                    gradeLabel = 'Grade A';
+                } else if (hba1c < 6.5) {
+                    grade = 'B';
+                    gradeLabel = 'Grade B';
+                } else {
+                    grade = 'C';
+                    gradeLabel = 'Grade C';
+                }
+                gradeSource = 'HbA1c';
+            } else {
+                if (stage === '1') {
+                    grade = 'A';
+                    gradeLabel = 'Grade A';
+                } else if (stage === '2') {
+                    grade = 'B';
+                    gradeLabel = 'Grade B';
+                } else {
+                    grade = 'C';
+                    gradeLabel = 'Grade C';
+                }
+                gradeSource = 'Periodontal severity';
+            }
+        }
+
+        return {
+            stage,
+            stageLabel,
+            grade,
+            gradeLabel,
+            gradeSource
+        };
+    },
+
+    /**
      * Calculate PISA to PESA ratio
      * Indicates inflammatory burden relative to epithelial surface
      * 

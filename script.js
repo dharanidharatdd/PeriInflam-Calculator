@@ -46,6 +46,14 @@ class PeriInflamApp {
             }
         });
 
+        ['mpd', 'mcal', 'ibl', 'hba1c'].forEach((id) => {
+            const field = document.getElementById(id);
+            if (field) {
+                field.addEventListener('input', () => this.updatePeriodontalClassification());
+                field.addEventListener('change', () => this.updatePeriodontalClassification());
+            }
+        });
+
         // Extract PDF button
         document.getElementById('extractBtn').addEventListener('click', () => this.extractPDF());
 
@@ -144,6 +152,8 @@ class PeriInflamApp {
         setIfFinite('neutrophils', values.neutrophils);
         setIfFinite('lymphocytes', values.lymphocytes);
         setIfFinite('hba1c', values.hba1c);
+
+        this.updatePeriodontalClassification();
     }
 
     calculateCBC() {
@@ -187,6 +197,8 @@ class PeriInflamApp {
                 document.getElementById('hba1cNote').textContent = '';
             }
 
+            this.updatePeriodontalClassification();
+
             this.showStatus('✓ Inflammatory indices calculated successfully!', 'success');
             this.switchTab('results');
 
@@ -203,12 +215,19 @@ class PeriInflamApp {
             const alsa = parseFloat(document.getElementById('alsa').value);
             const pisa = parseFloat(document.getElementById('pisa').value);
             const pesa = parseFloat(document.getElementById('pesa').value);
-            const staging = document.getElementById('staging').value;
-            const grading = document.getElementById('grading').value;
+            const hba1c = parseFloat(document.getElementById('hba1c').value);
+
+            const classification = this.updatePeriodontalClassification();
+            const staging = classification.stage;
+            const grading = classification.grade;
 
             // Store data
             this.periodontalData = {
-                mpd, mcal, ibl, alsa, pisa, pesa, staging, grading
+                mpd, mcal, ibl, alsa, pisa, pesa, staging, grading,
+                stageLabel: classification.stageLabel,
+                gradeLabel: classification.gradeLabel,
+                gradeSource: classification.gradeSource,
+                hba1c
             };
 
             // Display in results
@@ -218,8 +237,13 @@ class PeriInflamApp {
             document.getElementById('rAlsa').textContent = alsa ? alsa.toFixed(2) + ' mm²' : '—';
             document.getElementById('rPisa').textContent = pisa ? pisa.toFixed(2) + ' mm²' : '—';
             document.getElementById('rPesa').textContent = pesa ? pesa.toFixed(2) + ' mm²' : '—';
-            document.getElementById('rStaging').textContent = staging || '—';
-            document.getElementById('rGrading').textContent = grading || '—';
+            document.getElementById('rStaging').textContent = classification.stageLabel;
+            document.getElementById('rGrading').textContent = classification.gradeLabel;
+
+            const stagingSelect = document.getElementById('staging');
+            const gradingSelect = document.getElementById('grading');
+            if (stagingSelect) stagingSelect.value = staging;
+            if (gradingSelect) gradingSelect.value = grading;
 
             // Calculate PISA/PESA ratio if both available
             if (pisa && pesa) {
@@ -233,6 +257,27 @@ class PeriInflamApp {
         } catch (error) {
             this.showError(`Error: ${error.message}`);
         }
+    }
+
+    updatePeriodontalClassification() {
+        const mpd = parseFloat(document.getElementById('mpd').value);
+        const mcal = parseFloat(document.getElementById('mcal').value);
+        const ibl = parseFloat(document.getElementById('ibl').value);
+        const hba1c = parseFloat(document.getElementById('hba1c').value);
+        const classification = Calculator.calculatePeriodontalClassification({ mpd, mcal, ibl, hba1c });
+
+        const stagingSelect = document.getElementById('staging');
+        const gradingSelect = document.getElementById('grading');
+
+        if (stagingSelect) stagingSelect.value = classification.stage;
+        if (gradingSelect) gradingSelect.value = classification.grade;
+
+        const stagingOutput = document.getElementById('rStaging');
+        const gradingOutput = document.getElementById('rGrading');
+        if (stagingOutput) stagingOutput.textContent = classification.stageLabel;
+        if (gradingOutput) gradingOutput.textContent = classification.gradeLabel;
+
+        return classification;
     }
 
     exportResults() {

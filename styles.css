@@ -147,6 +147,17 @@ main {
     margin-top: 10px;
 }
 
+.hidden-file-input {
+    display: none;
+}
+
+.extract-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+}
+
 /* Form Grid */
 .form-grid {
     display: grid;
@@ -349,6 +360,7 @@ main {
     position: fixed;
     bottom: 20px;
     right: 20px;
+    display: none;
     padding: 16px 24px;
     border-radius: 6px;
     color: white;
