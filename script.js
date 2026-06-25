@@ -105,17 +105,17 @@ class PeriInflamApp {
                 throw new Error('PDF extraction returned insufficient text');
             }
 
-            this.showStatus('Converting text with AI...', 'info');
+            this.showStatus('Sending extracted text to backend...', 'info');
 
-            // Check if Gemini API is configured
+            // Check if backend API is configured
             if (!GeminiHandler.isConfigured()) {
-                this.showError('⚠️ AI key not configured in app. Falling back to basic parsing.');
+                this.showError('⚠️ Backend API not configured in app. Falling back to basic parsing.');
                 const rawValues = await PDFHandler.parseRawCBCValues(extractedText);
                 this.fillCBCFields(rawValues);
                 return;
             }
 
-            // Use Gemini to intelligently extract values
+            // Use the backend to intelligently extract values
             const parsedValues = await GeminiHandler.extractCBCFromPDF(extractedText);
             
             this.cbcData = parsedValues;
@@ -127,8 +127,8 @@ class PeriInflamApp {
             // Check for quota exhausted error
             if (error.message === 'AI_QUOTA_EXHAUSTED') {
                 this.showError('🔄 AI is temporarily unavailable. The free trial quota has been exhausted. Please enter values manually or try again later.');
-            } else if (error.message.includes('API key not configured')) {
-                this.showError('⚠️ API key not configured. Please add your Gemini API key to continue with AI extraction.');
+            } else if (error.message.includes('Backend API')) {
+                this.showError('⚠️ Backend API is not configured. Set the Render URL in the frontend config and try again.');
             } else {
                 this.showError(`Error: ${error.message}`);
             }

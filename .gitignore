@@ -51,3 +51,5 @@ coverage/
 !pdf-handler.js
 !script.js
 !README.md
+
+.venv/
