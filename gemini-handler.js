@@ -9,7 +9,7 @@
 const GeminiHandler = {
     // ⚠️ Preconfigure your Gemini API key here for static hosting.
     // Replace 'YOUR_GEMINI_API_KEY_HERE' with your actual key before testing/deploying.
-    API_KEY: 'AQ.Ab8RN6L_qRSgA0q_0ztX9V5wkQNIHzna-_ga9OWonZP04aSsoA',
+    API_KEY: 'api-key-here',
     API_URL: 'https://generativelanguage.googleapis.com/v1beta/interactions',
     MODEL: 'gemini-3.5-flash',
     
